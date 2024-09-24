@@ -18,13 +18,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Log in to the Container registry
-        uses: docker/login-action@v3
-        with:
-          registry: https://registry.cloudzilla.ai/
-          username: 'robot$lens-project-64a7d029+imageuser'
-          password: '${{ secrets.DOCKER_PASSWORD }}'
-
       - name: downcase REPO
         run: |
           image="${GITHUB_REPOSITORY#*/}"
@@ -35,6 +28,7 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.IMAGE_PREFIX }}${{ env.IMAGE_NAME }}
+          
       - name: Valiate existing .env file
         run: |
           # Path to your .env file
