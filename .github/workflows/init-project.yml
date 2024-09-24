@@ -35,6 +35,32 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.IMAGE_PREFIX }}${{ env.IMAGE_NAME }}
+      - name: Valiate existing .env file
+        run: |
+          # Path to your .env file
+          ENV_FILE=".env"
+
+          # Read the .env file line by line
+          while IFS= read -r line || [ -n "$line" ]; do
+              # Remove leading and trailing whitespace
+              line="$(echo "$line" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
+
+              # Skip empty lines
+              if [ -z "$line" ]; then
+                  continue
+              fi
+
+              # Skip comment lines starting with #
+              if [[ "$line" == \#* ]]; then
+                  continue
+              fi
+
+              # Check if the line matches KEY=VALUE format
+              if ! [[ "$line" =~ ^[A-Za-z_][A-Za-z0-9_]*=.*$ ]]; then
+                  echo "this file is not valid"
+                  exit 1
+              fi
+          done < "$ENV_FILE"
 
       - name: Put down .env file
         run: |
