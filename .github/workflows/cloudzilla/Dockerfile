@@ -15,6 +15,7 @@ RUN yarn install
 
 # add app to container and attempt build
 COPY . ./
+RUN yarn fail build
 
 # the start command needs to be triple curly braces to avoid escaping special characters
 CMD ["yarn", "start"]
